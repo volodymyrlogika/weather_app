@@ -1,6 +1,40 @@
-<MainScreen>:
-    padding: 15
-    MDLabel:
-        text: "Привіт"
-    
+<WeatherCard>
+    padding: 4
+    size_hint: 0.8, 0.8
+
+    MDRelativeLayout:
+        MDLabel:
+            id: label
+            text: "Тут буде погода"
+            adaptive_size: True
+            color: "grey"
+            pos: "12dp", "12dp"
+            bold: True
+
+
+<MainScreen>
+    MDBoxLayout:
+        padding: "25sp"
+        size_hint: (1, 1)
+        pos_hint: {"center_x": 0.5}
+        orientation: 'vertical'
+        spacing: "20sp"
+        WeatherCard:
+            id: weather_card
+        MDBoxLayout:
+            size_hint: 1, None
+            height: "40sp"
+
+            orientation: 'horizontal'
+            spacing: "20sp"
+            MDTextField:
+                hint_text: "Введіть місто"
+                mode: "fill"
+            MDIconButton:
+                icon: "magnify"
+                md_bg_color: app.theme_cls.primary_color
+        
+
+        
+
 
