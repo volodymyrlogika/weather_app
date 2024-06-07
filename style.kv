@@ -1,18 +1,50 @@
-<WeatherCard>
+<WeatherCard>:
     padding: 4
-    size_hint: 0.9, 0.8
+    size_hint: 1, 1
 
-    MDRelativeLayout:
+    MDBoxLayout:
+        orientation: 'vertical'
+        pos_hint:  {"center_y":0.5}
+        padding: "20sp"
+        size_hint: (1, 1)
         MDLabel:
-            id: label
-            text: "Тут буде погода"
+            id: desc_text
+            text: "Хмарно"
             adaptive_size: True
             color: "grey"
-            pos: "12dp", "12dp"
+            pos_hint: {"center_x":0.5}
+            font_style: 'H5'
             bold: True
+        AsyncImage:
+            id: weather_icon
+            pos_hint: {"center_x":0.5}
+            source: "https://openweathermap.org/img/wn/10d@2x.png"
+            size_hint: (None, None)
+            height: "100sp" 
+            width: "100sp" 
+            fit_mode: 'contain'
+        MDLabel:
+            id: temp_text
+            text: "21°C"
+            adaptive_size: True
+            color: "grey"
+            pos_hint: {"center_x":0.5}
+            font_style: 'H4'
+        MDLabel:
+            id: rain_text
+            text: "Ймовірність опадів: 20%"
+            adaptive_size: True
+            color: "grey"
+            pos_hint: {"center_x":0.5}
+        MDLabel:
+            id: wind_text
+            text: "Швидкість вітру: 20 м/c"
+            adaptive_size: True
+            color: "grey"
+            pos_hint: {"center_x":0.5}
 
 
-<MainScreen>
+<MainScreen>:
     MDBoxLayout:
         orientation: 'vertical'
         spacing: "20sp"
@@ -39,8 +71,11 @@
                     icon: "magnify"
                     md_bg_color: app.theme_cls.primary_color
                     on_press: root.weather_search()
-            WeatherCard:
-                id: weather_card
+            MDCarousel:
+                id: weather_carousel
+                direction: 'right'
+                padding: 10
+                size_hint: 0.9, 0.8
             
 
         
