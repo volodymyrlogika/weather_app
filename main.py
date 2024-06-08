@@ -6,6 +6,7 @@ from kivymd.uix.label import MDLabel
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.screen import MDScreen
+from kivy.storage.jsonstore import JsonStore
 import requests
 
 from config import API_KEY, API_URL, FORECAST_URL
@@ -24,10 +25,20 @@ class WeatherCard(MDCard):
 class MainScreen(MDScreen):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.store = JsonStore('last_city.json')
+        self.load_last_city()
+
+    def load_last_city(self):
+        if self.store.exists('last_city'):
+            last_city = self.store.get('last_city')['name']
+            self.ids.city_field.text = last_city.capitalize()
+            self.weather_search()
 
     def weather_search(self):
         self.ids.weather_carousel.clear_widgets()
         city = self.ids.city_field.text.strip().lower()
+        # Збереження останнього введеного міста
+        self.store.put('last_city', name=city)
         current_weather = self.get_weather_data(API_URL, city)
         forecast = self.get_weather_data(FORECAST_URL, city)
 
@@ -72,6 +83,7 @@ class MainScreen(MDScreen):
 
 class WeatherApp(MDApp):
     def build(self):
+
         Builder.load_file('style.kv')
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Purple"
