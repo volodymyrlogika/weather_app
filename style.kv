@@ -1,15 +1,22 @@
 <WeatherCard>:
     padding: 4
-    size_hint: 1, 1
+    size_hint: 0.95, 1
 
     MDBoxLayout:
         orientation: 'vertical'
         pos_hint:  {"center_y":0.5}
         padding: "20sp"
-        size_hint: (1, 1)
+        size_hint: (0.9, 0.9)
+        MDLabel:
+            id: date_text
+            text: "Зараз"
+            adaptive_size: True
+            color: "grey"
+            pos_hint: {"center_x":0.5}
+            font_style: 'Caption'
         MDLabel:
             id: desc_text
-            text: "Хмарно"
+            text: "Тут буде погода...."
             adaptive_size: True
             color: "grey"
             pos_hint: {"center_x":0.5}
@@ -50,7 +57,7 @@
         spacing: "20sp"
         MDTopAppBar:
             title: "My WeatherApp"
-            left_action_items: [["menu", lambda x: app.callback()]]
+            right_action_items: [["message-alert-outline", lambda x: root.show_about_dialog()]]
         MDBoxLayout:
             padding: "25sp"
             size_hint: (1, 0.8)
@@ -74,8 +81,7 @@
             MDCarousel:
                 id: weather_carousel
                 direction: 'right'
-                padding: 10
-                size_hint: 0.9, 0.8
+                size_hint: 1, 0.8
             
 
         
