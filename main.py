@@ -5,11 +5,12 @@ from kivymd.uix.label import MDLabel
 from kivymd.uix.screen import MDScreen
 import requests
 
-from config import API_KEY, API_URL
+from config import API_KEY, API_URL, FORECAST_URL
 
 class WeatherCard(MDCard):
-    def __init__(self , description, icon, temp, rain, wind, *args, **kwargs):
+    def __init__(self , date_time, description, icon, temp, rain, wind, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.ids.date_text.text = date_time
         self.ids.desc_text.text = description
         self.ids.temp_text.text = f"{temp}°C"
         self.ids.rain_text.text = f"Ймовірність опадів: {rain*100}%"
@@ -21,29 +22,51 @@ class MainScreen(MDScreen):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def weather_search(self):
-        self.ids.weather_carousel.clear_widgets()
-        city = self.ids.city_field.text.strip().lower() #отримує з текостового поля назву міста
+    def get_weather_data(self, url, city):
+        """Функція робить запиит до сайту погоди і повертає JSON з даними"""
         api_params = { 
             "q": city, 
             "appid": API_KEY
         }
         
-        data = requests.get(API_URL, api_params) # робимо запит по АПІ до сервісу погоди
-        response = data.json() # отримуємо дані про погодуу форматі JSON
-        print(response) 
+        data = requests.get(url, api_params) # робимо запит по АПІ до сервісу погоди
+        if data.status_code == 200:
+            response = data.json() # отримуємо дані про погодуу форматі JSON
+            return response
+        else:
+            return None
+
+    def add_weather_card(self, response):
         description = response["weather"][0]["description"] #опис погоди
         icon =  response["weather"][0]["icon"] # інонка
         temp = response["main"]["temp"] #температура
         if 'rain' in response:
-            rain = response["rain"]["1h"]
+            if "1h" in response["rain"]:
+                rain = response["rain"]["1h"]
+            else:
+                rain = response["rain"]["3h"]
         else:
             rain = 0
-        wind = response["wind"]["speed"]        
-        new_card = WeatherCard(description, icon, temp, rain, wind)
-        self.ids.weather_carousel.add_widget(new_card)   
+        wind = response["wind"]["speed"]
+        if "dt_txt" in response:
+            date_time = response['dt_txt'][5:-3]  
+        else:
+            date_time = "Зараз"   
+        new_card = WeatherCard(date_time, description, icon, temp, rain, wind)
+        self.ids.weather_carousel.add_widget(new_card)  
 
+    def weather_search(self):
+        self.ids.weather_carousel.clear_widgets()
+        city = self.ids.city_field.text.strip().lower() #отримує з текостового поля назву міста
+        current_weather = self.get_weather_data(API_URL,city)
+        forecast = self.get_weather_data(FORECAST_URL, city)
+        
+        if current_weather:
+            self.add_weather_card(current_weather)
 
+        if forecast:
+            for period in forecast['list']:
+                self.add_weather_card(period)
 
 
 class WeatherApp(MDApp):

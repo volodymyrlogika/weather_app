@@ -1,12 +1,19 @@
 <WeatherCard>:
     padding: 4
-    size_hint: 1, 1
+    size_hint: 0.95, 1
 
     MDBoxLayout:
         orientation: 'vertical'
         pos_hint:  {"center_y":0.5}
         padding: "20sp"
         size_hint: (1, 1)
+        MDLabel:
+            id: date_text
+            text: "Зараз"
+            adaptive_size: True
+            color: "grey"
+            pos_hint: {"center_x":0.5}
+            font_style: 'Caption'
         MDLabel:
             id: desc_text
             text: "Хмарно"
@@ -45,12 +52,13 @@
 
 
 <MainScreen>:
+    
     MDBoxLayout:
         orientation: 'vertical'
         spacing: "20sp"
         MDTopAppBar:
             title: "My WeatherApp"
-            left_action_items: [["menu", lambda x: app.callback()]]
+            
         MDBoxLayout:
             padding: "25sp"
             size_hint: (1, 0.8)
